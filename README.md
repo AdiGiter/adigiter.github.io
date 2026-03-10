@@ -2,50 +2,65 @@
 ### A "No-App" Audio Guidance System for Public Spaces
 **Team Innovix | BIT Mesra, Off Campus Jaipur | NSS IDP SP-2026**
 
+🔗 **Live Site:** https://adigiter.github.io
+
+---
+
+## What It Does
+
+Sahayak-Drishti is a fully static Progressive Web App (PWA) that turns any phone camera into an audio guide for visually impaired and illiterate users.
+
+A network of QR code stickers is placed at key campus locations (entrance, library, canteen, hostel, etc.). When a user scans a sticker, their browser opens a page that **automatically speaks the location description** in Hindi or English — no app download required.
+
+A separate **navigation page** lets users find the shortest walking route between any two campus locations, with step-by-step spoken directions in both languages.
+
+---
+
+## How It Works
+
+```
+[QR Sticker at Campus Location]
+         ↓  user scans
+[Phone Camera → Opens Browser]
+         ↓
+[index.html?loc=library_entry]
+         ↓
+[app.js fetches locations.json]
+         ↓
+[Web Speech API (SpeechSynthesis)]
+         ↓
+🔊 "You are at the Main Library entrance..."
+```
+
+For navigation:
+```
+[User picks From → To on navigate.html]
+         ↓
+[Dijkstra shortest path on campus graph]
+         ↓
+[Turn-by-turn directions built]
+         ↓
+🔊 "Step 1: Turn right, 40 steps to Admin Block..."
+```
+
 ---
 
 ## Project Structure
 
 ```
-sahayak-drishti/
-├── pom.xml                                         ← Maven build config
-├── qr_generator.py                                 ← Python QR printer script
-│
-├── src/main/java/com/innovix/sahayak/
-│   ├── SahayakApplication.java                     ← Spring Boot entry point
-│   ├── model/
-│   │   └── Location.java                           ← JPA Entity
-│   ├── repository/
-│   │   └── LocationRepository.java                 ← Spring Data JPA
-│   ├── dto/
-│   │   └── LocationDTO.java                        ← Request / Response DTOs
-│   ├── service/
-│   │   ├── LocationService.java                    ← Business logic
-│   │   └── QRCodeService.java                      ← ZXing QR generation
-│   ├── controller/
-│   │   ├── LocationController.java                 ← Public REST API
-│   │   └── AdminController.java                    ← Protected Admin REST API
-│   └── config/
-│       ├── SecurityConfig.java                     ← Spring Security
-│       └── GlobalExceptionHandler.java             ← Global error handling
-│
-├── src/main/resources/
-│   ├── application.properties                      ← App configuration
-│   ├── data.sql                                    ← Seed data (14 locations)
-│   └── static/
-│       ├── index.html                              ← QR scan landing page
-│       ├── admin.html                              ← Admin CRUD panel
-│       ├── manifest.json                           ← PWA manifest
-│       ├── sw.js                                   ← Service Worker (offline)
-│       ├── css/
-│       │   ├── style.css                           ← Guide page styles
-│       │   └── admin.css                           ← Admin panel styles
-│       └── js/
-│           ├── app.js                              ← Speech API + fetch logic
-│           └── admin.js                            ← Admin CRUD JavaScript
-│
-└── src/test/
-    └── SahayakApplicationTests.java                ← JUnit 5 tests
+adigiter.github.io/
+├── index.html          ← QR scan landing page (audio guidance)
+├── navigate.html       ← Campus navigation with Dijkstra pathfinding
+├── admin.html          ← Admin panel UI (frontend only)
+├── app.js              ← Speech API + location fetch logic
+├── style.css           ← Guide page styles
+├── admin.css           ← Admin panel styles
+├── admin.js            ← Admin panel JavaScript
+├── locations.json      ← All 14 campus locations (bilingual data)
+├── manifest.json       ← PWA manifest
+├── sw.js               ← Service Worker (offline caching)
+├── qr_generator.py     ← Python script to generate QR code PNGs
+└── qr-codes/           ← Pre-generated QR code images
 ```
 
 ---
@@ -54,139 +69,97 @@ sahayak-drishti/
 
 | Layer | Technology |
 |---|---|
-| Backend | Java 17, Spring Boot 3.2 |
-| REST API | Spring Web MVC |
-| Security | Spring Security (HTTP Basic Auth) |
-| ORM | Spring Data JPA + Hibernate |
-| Database | H2 (dev) / MySQL (production) |
-| QR Generation | ZXing (Java), qrcode library (Python) |
+| Hosting | GitHub Pages (free, static) |
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Speech | Web Speech API (SpeechSynthesis) |
-| PWA | Service Worker + Cache API |
-| Build | Maven |
+| Speech | Web Speech API (SpeechSynthesis) — browser-native, no cloud |
+| Navigation | Dijkstra shortest path (plain JS, ~30 lines) |
+| Data | Static `locations.json` (14 locations, EN + HI) |
+| PWA | Service Worker + Cache API (works offline after first load) |
+| QR Generation | Python `qrcode` library |
+
+No backend. No database. No server costs.
 
 ---
 
-## REST API Endpoints
+## Campus Locations (14)
 
-### Public (No Auth Required)
-```
-GET  /api/location                    → List all active locations
-GET  /api/location/{key}              → Get location by key (QR scan)
-GET  /api/location/{key}/qr           → Get QR code PNG image
-GET  /api/location/{key}/qr/download  → Download QR code PNG
-GET  /api/location/{key}/url          → Get scan URL string
-```
-
-### Admin (HTTP Basic Auth)
-```
-GET    /api/admin/stats               → Dashboard stats
-GET    /api/admin/locations           → All locations (incl. inactive)
-GET    /api/admin/locations/{id}      → Single location
-POST   /api/admin/locations           → Create new location
-PUT    /api/admin/locations/{id}      → Update location
-PATCH  /api/admin/locations/{id}/activate   → Re-enable location
-PATCH  /api/admin/locations/{id}/deactivate → Soft-disable location
-DELETE /api/admin/locations/{id}      → Hard delete
-GET    /api/admin/search?q=keyword    → Search locations
-```
+| Key | Location |
+|---|---|
+| `main_entrance` | Main Entrance |
+| `admin_block` | Administrative Block |
+| `principal_office` | Principal Office |
+| `scholarship_section` | Scholarship Section |
+| `exam_cell` | Examination Cell |
+| `library_entry` | Main Library — Entry |
+| `library_counter` | Library — Issue & Return Counter |
+| `medical_room` | Campus Medical Room |
+| `atm` | Campus ATM |
+| `sports_complex` | Sports Complex / Ground |
+| `canteen` | Campus Canteen |
+| `hostel_entry` | Hostel Entry Gate |
+| `washroom_ground` | Ground Floor Washroom — Admin Block |
+| `parking_area` | Campus Parking |
 
 ---
 
-## Setup & Run
+## Test URLs
 
-### Prerequisites
-- Java 17+ (`java -version`)
-- Maven 3.8+ (`mvn -version`)
-- Python 3.8+ (for QR generator only)
-
-### 1. Clone / Download
-```bash
-cd sahayak-drishti
-```
-
-### 2. Run the Backend
-```bash
-mvn spring-boot:run
-```
-
-Server starts at: **http://localhost:8080**
-
-### 3. Access the App
 | URL | Description |
 |---|---|
-| http://localhost:8080 | Public guide page (scan landing) |
-| http://localhost:8080/admin.html | Admin panel |
-| http://localhost:8080/h2-console | H2 DB console (dev) |
-| http://localhost:8080/index.html?loc=library_entry | Test a QR scan |
+| https://adigiter.github.io | Home page |
+| https://adigiter.github.io/index.html?loc=library_entry | Library QR scan demo |
+| https://adigiter.github.io/index.html?loc=main_entrance | Main entrance demo |
+| https://adigiter.github.io/navigate.html | Campus navigation |
 
-### 4. Admin Login
-```
-Username: admin
-Password: Innovix@2026
-```
-> Change in `application.properties` before production.
+---
 
-### 5. Run Tests
-```bash
-mvn test
-```
+## Generating QR Codes
 
-### 6. Generate QR Stickers
 ```bash
 pip install qrcode[pil] Pillow
-# Edit SERVER_URL in qr_generator.py to your server IP
 python qr_generator.py
-# PNG files → ./qr_output/
+# Output: ./qr_output/ — one PNG per location
 ```
+
+QR codes encode URLs in the format:
+```
+https://adigiter.github.io/index.html?loc=<location_key>
+```
+
+Print on A4 sticker paper, laminate, and mount at eye level (~150cm) at each location.
 
 ---
 
-## Production Deployment
+## Features
 
-### Switch to MySQL
-In `application.properties`, uncomment:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/sahayakdb
-spring.datasource.username=root
-spring.datasource.password=YOUR_PASSWORD
-spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
-spring.jpa.hibernate.ddl-auto=update
-spring.h2.console.enabled=false
-```
-
-And in `pom.xml`, uncomment the MySQL dependency.
-
-### Build JAR
-```bash
-mvn clean package -DskipTests
-java -jar target/sahayak-drishti-1.0.0.jar
-```
-
-### Update QR Base URL
-```properties
-sahayak.qr.base-url=http://YOUR_DOMAIN_OR_IP:8080
-```
+- **Zero Install** — works in any mobile browser, no app download
+- **Bilingual** — English and Hindi, auto-detected from phone language
+- **Offline PWA** — service worker caches the site after first load
+- **Campus Navigation** — Dijkstra shortest path between all 14 locations with spoken turn-by-turn directions
+- **Accessible UI** — high contrast, large buttons, screen reader compatible
+- **Speed Control** — 0.7×, 1.0×, 1.3×, 1.6× speech rate
+- **Free to run** — GitHub Pages hosting, browser-native speech, no API costs
 
 ---
 
-## How It Works
+## Cost
 
-```
-[QR Sticker at Campus Location]
-         ↓  (user scans)
-[Phone Camera → Opens Browser]
-         ↓
-[GET /index.html?loc=library_entry]
-         ↓
-[JavaScript → GET /api/location/library_entry]
-         ↓
-[Spring Boot → H2/MySQL → Returns JSON]
-         ↓
-[JavaScript → Web Speech API]
-         ↓
-🔊 "You are at the Main Library entrance..."
-```
+| Item | Cost |
+|---|---|
+| Hosting | ₹0 (GitHub Pages) |
+| Speech API | ₹0 (browser-native) |
+| QR Generation | ₹0 (Python library) |
+| Printing + Lamination | ₹200–400 |
+| **Total** | **₹200–400** |
+
+---
+
+## Social Impact
+
+- Aligns with **Accessible India Campaign (Sugamya Bharat Abhiyan)**
+- Serves both visually impaired (audio) and illiterate users (audio)
+- Replicable in hospitals, bus stands, government offices
+- Cheaper than Braille signage or digital kiosks
 
 ---
 
