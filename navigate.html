@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="theme-color" content="#0a0a0a"/>
+  <title>Navigate — Sahayak-Drishti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --yellow: #FFD600;
+      --bg:     #0a0a0a;
+      --card:   #141414;
+      --border: #2a2a2a;
+      --text:   #f0f0f0;
+      --muted:  #666;
+      --green:  #00ff88;
+      --red:    #ff4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(10,10,10,0.96);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .logo-group { display: flex; align-items: center; gap: 12px; }
+    .logo-icon  { font-size: 28px; line-height: 1; }
+    .logo-text  { display: flex; flex-direction: column; line-height: 1.1; }
+    .name-en    { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--yellow); }
+    .name-hi    { font-size: 12px; color: var(--muted); }
+    .nav-badge  {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      background: var(--yellow);
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* ── MAIN ── */
+    .main { max-width: 540px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── SECTION TITLE ── */
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      padding: 24px 0 12px;
+    }
+
+    /* ── PICKER CARD ── */
+    .picker-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .picker-row {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .picker-row:last-child { border-bottom: none; }
+
+    .picker-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot-from { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .dot-to   { width: 10px; height: 10px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+
+    .picker-select {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 6px;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+    }
+    .picker-select:focus { outline: none; border-color: var(--yellow); }
+
+    /* swap button */
+    .swap-row {
+      display: flex;
+      justify-content: center;
+      padding: 4px 0;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .btn-swap {
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      color: var(--yellow);
+      font-size: 20px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .btn-swap:hover { background: #2a2a2a; }
+
+    /* ── ROUTE BUTTON ── */
+    .btn-route {
+      width: 100%;
+      background: var(--yellow);
+      color: #000;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 16px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-route:active { transform: scale(0.98); }
+    .btn-route:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── RESULT CARD ── */
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 4px;
+      overflow: hidden;
+      display: none;
+    }
+    .result-card.visible { display: block; }
+
+    .result-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .result-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--yellow);
+    }
+    .result-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* route steps */
+    .steps-list {
+      padding: 8px 0;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #1a1a1a;
+      animation: fadeUp 0.3s ease both;
+    }
+    .step-item:last-child { border-bottom: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-num-badge {
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 32px; height: 32px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-num-badge.start { background: var(--green); color: #000; border-color: var(--green); }
+    .step-num-badge.end   { background: var(--yellow); color: #000; border-color: var(--yellow); }
+
+    .step-body { flex: 1; }
+    .step-action {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .step-detail {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .step-hi {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 13px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    /* connector line */
+    .connector {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+    }
+    .connector-line-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 32px;
+    }
+    .connector-line {
+      width: 2px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    /* audio controls */
+    .audio-bar {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn-speak {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+    .btn-speak:hover  { border-color: var(--yellow); }
+    .btn-speak.active { border-color: var(--green); color: var(--green); }
+    .btn-speak-stop {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: var(--red);
+      font-size: 18px;
+      width: 44px; height: 44px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* lang toggle */
+    .lang-toggle {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .lang-btn {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lang-btn.active {
+      border-color: var(--yellow);
+      color: var(--yellow);
+      background: #1a1600;
+    }
+
+    /* demo routes */
+    .demo-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .demo-btn {
+      background: #111;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+    .demo-btn:hover { border-color: var(--yellow); }
+    .demo-btn .arrow { color: var(--yellow); font-size: 18px; }
+    .demo-route-label { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 400; }
+
+    /* back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      text-decoration: none;
+      padding: 20px 0 0;
+    }
+    .back-link:hover { color: var(--yellow); }
+
+    /* status chip */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+    .status-dot.speaking { animation: pulse 0.8s infinite; background: var(--green); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* no route */
+    .no-route {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* total steps pill */
+    .total-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1a1600;
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin: 12px 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="logo-group">
+    <div class="logo-icon">👁</div>
+    <div class="logo-text">
+      <span class="name-en">Sahayak-Drishti</span>
+      <span class="name-hi">सहायक-दृष्टि</span>
+    </div>
+  </div>
+  <span class="nav-badge">NAVIGATE</span>
+</header>
+
+<div class="main">
+
+  <a href="index.html" class="back-link">← Back to Guide</a>
+
+  <!-- LANG TOGGLE -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">English</button>
+    <button class="lang-btn"        id="btn-hi" onclick="setLang('hi')">हिन्दी</button>
+  </div>
+
+  <!-- ROUTE PICKER -->
+  <p class="section-label">// PLAN YOUR ROUTE</p>
+
+  <div class="picker-card">
+    <div class="picker-row">
+      <span class="picker-label"><span class="dot-from"></span> FROM — आप कहाँ हैं</span>
+      <select class="picker-select" id="sel-from"></select>
+    </div>
+    <div class="swap-row">
+      <button class="btn-swap" onclick="swapLocations()" title="Swap">⇅</button>
+    </div>
+    <div class="picker-row">
+      <span class="picker-label"><span class="dot-to"></span> TO — आप कहाँ जाना चाहते हैं</span>
+      <select class="picker-select" id="sel-to"></select>
+    </div>
+  </div>
+
+  <button class="btn-route" id="btn-find" onclick="findRoute()">
+    ▶ FIND ROUTE / रास्ता खोजें
+  </button>
+
+  <!-- RESULT -->
+  <div class="result-card" id="result-card">
+
+    <div class="result-header">
+      <span class="result-title" id="result-title">ROUTE</span>
+      <div class="status-chip">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">READY</span>
+      </div>
+    </div>
+
+    <div class="total-pill" id="total-pill">🚶 0 steps total</div>
+
+    <div class="steps-list" id="steps-list"></div>
+
+    <div class="audio-bar">
+      <button class="btn-speak" id="btn-speak" onclick="speakRoute()">
+        <span>🔊</span> <span id="speak-label">SPEAK ROUTE</span>
+      </button>
+      <button class="btn-speak-stop" onclick="stopSpeech()" title="Stop">⏹</button>
+    </div>
+
+  </div>
+
+  <!-- DEMO ROUTES -->
+  <p class="section-label">// DEMO ROUTES FOR PRESENTATION</p>
+  <div class="demo-grid">
+    <button class="demo-btn" onclick="loadDemo('main_entrance','library_entry')">
+      <div>
+        <div>Main Entrance → Library</div>
+        <div class="demo-route-label">मुख्य प्रवेश → पुस्तकालय</div>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+    <button class="demo-btn" onclick="loadDemo('library_entry','canteen')">
+      <div>
+        <div>Library → Canteen</div>
+        <div class="demo-route-label">पुस्तकालय → कैंटीन</div>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+    <button class="demo-btn" onclick="loadDemo('main_entrance','hostel_entry')">
+      <div>
+        <div>Main Entrance → Hostel</div>
+        <div class="demo-route-label">मुख्य प्रवेश → छात्रावास</div>
+      </div>
+      <span class="arrow">→</span>
+    </button>
+  </div>
+
+</div><!-- .main -->
+
+<script>
+'use strict';
+
+// ── CAMPUS GRAPH ────────────────────────────────────────
+// Based on BIT Mesra Jaipur layout:
+// Entrance → (right) Admin/Main Building, (left) Admission Block → Library → Machine Lab
+// Straight ahead mid-campus → (right) Ground/Sports, (left) Workshop → BAM Hall → Canteen + Hostel
+// Parking at far ends
+
+const LOCATIONS = {
+  main_entrance:        { en: 'Main Entrance',                    hi: 'मुख्य प्रवेश द्वार' },
+  admin_block:          { en: 'Administrative Block',             hi: 'प्रशासनिक खंड' },
+  principal_office:     { en: 'Principal Office',                 hi: 'प्रधानाचार्य कार्यालय' },
+  scholarship_section:  { en: 'Scholarship Section',              hi: 'छात्रवृत्ति अनुभाग' },
+  exam_cell:            { en: 'Examination Cell',                 hi: 'परीक्षा प्रकोष्ठ' },
+  library_entry:        { en: 'Main Library — Entry',             hi: 'मुख्य पुस्तकालय — प्रवेश' },
+  library_counter:      { en: 'Library — Issue & Return Counter', hi: 'पुस्तकालय — काउंटर' },
+  medical_room:         { en: 'Campus Medical Room',              hi: 'कैंपस चिकित्सा कक्ष' },
+  atm:                  { en: 'Campus ATM',                       hi: 'कैंपस एटीएम' },
+  sports_complex:       { en: 'Sports Complex / Ground',          hi: 'खेल परिसर / मैदान' },
+  canteen:              { en: 'Campus Canteen',                   hi: 'कैंपस कैंटीन' },
+  hostel_entry:         { en: 'Hostel Entry Gate',                hi: 'छात्रावास प्रवेश द्वार' },
+  washroom_ground:      { en: 'Ground Floor Washroom',            hi: 'भूतल शौचालय' },
+  parking_area:         { en: 'Campus Parking',                   hi: 'कैंपस पार्किंग' },
+};
+
+// Edges: [nodeA, nodeB, steps, directionFromAtoB_en, directionFromAtoB_hi]
+// Bidirectional — reverse directions auto-generated
+const EDGES = [
+  // Entrance connections
+  ['main_entrance', 'admin_block',         40,  'Turn right and walk',              'दाईं ओर मुड़ें और चलें'],
+  ['main_entrance', 'library_entry',       90,  'Go straight then turn left',       'सीधे जाएं फिर बाईं ओर मुड़ें'],
+  ['main_entrance', 'medical_room',        50,  'Go straight, main block right side','सीधे जाएं, मुख्य खंड दाईं ओर'],
+  ['main_entrance', 'atm',                 45,  'Go straight, ATM on right wall',   'सीधे जाएं, एटीएम दाईं दीवार पर'],
+
+  // Admin Block internal
+  ['admin_block', 'principal_office',      30,  'Enter building, take stairs to First Floor', 'इमारत में प्रवेश करें, पहली मंजिल के लिए सीढ़ियाँ लें'],
+  ['admin_block', 'scholarship_section',   15,  'Enter building, ground floor left', 'इमारत में प्रवेश करें, भूतल बाईं ओर'],
+  ['admin_block', 'exam_cell',             40,  'Enter building, take stairs to Second Floor', 'इमारत में प्रवेश करें, दूसरी मंजिल के लिए सीढ़ियाँ लें'],
+  ['admin_block', 'washroom_ground',       10,  'Turn right inside building',       'इमारत के अंदर दाईं ओर मुड़ें'],
+  ['admin_block', 'atm',                   20,  'Walk to the building exterior wall','इमारत की बाहरी दीवार की ओर चलें'],
+
+  // Library internal
+  ['library_entry', 'library_counter',     10,  'Enter, counter is straight ahead', 'प्रवेश करें, काउंटर सीधे आगे है'],
+
+  // Mid-campus connections (left side path)
+  ['library_entry', 'sports_complex',     120,  'Continue straight along left path', 'बाईं ओर के रास्ते से सीधे चलते रहें'],
+  ['library_entry', 'canteen',            200,  'Go straight along left side to end of campus', 'बाईं ओर सीधे कैंपस के अंत तक चलें'],
+
+  // Mid-campus right side
+  ['admin_block',   'sports_complex',     100,  'Walk straight, ground is on your right past mid-campus', 'सीधे चलें, मैदान कैंपस के बीच में दाईं ओर है'],
+  ['medical_room',  'sports_complex',      70,  'Continue straight along right path', 'दाईं ओर के रास्ते से सीधे चलते रहें'],
+
+  // Far end of campus
+  ['sports_complex', 'hostel_entry',       80,  'Continue straight, hostel gate ahead center-right', 'सीधे चलें, छात्रावास गेट आगे केंद्र-दाईं ओर'],
+  ['sports_complex', 'canteen',            80,  'Cross to left side at mid-campus',  'कैंपस के बीच में बाईं ओर पार करें'],
+  ['canteen',        'hostel_entry',       60,  'Walk right from canteen',           'कैंटीन से दाईं ओर चलें'],
+  ['hostel_entry',   'parking_area',       80,  'Continue to campus far end',        'कैंपस के दूर छोर की ओर चलें'],
+  ['canteen',        'parking_area',       50,  'Walk to campus far left end',       'कैंपस के दूर बाईं छोर की ओर चलें'],
+];
+
+// ── REVERSE DIRECTIONS ──────────────────────────────────
+const REVERSE_DIR = {
+  'Turn right and walk':                        'Turn left and walk',
+  'Go straight then turn left':                 'Go straight then turn right',
+  'Go straight, main block right side':         'Turn around, main building on left',
+  'Go straight, ATM on right wall':             'Turn around, ATM behind you',
+  'Enter building, take stairs to First Floor': 'Exit building, take stairs down',
+  'Enter building, ground floor left':          'Exit building, turn right',
+  'Enter building, take stairs to Second Floor':'Exit building, take stairs down twice',
+  'Turn right inside building':                 'Turn left inside building',
+  'Walk to the building exterior wall':         'Walk back to building entrance',
+  'Enter, counter is straight ahead':           'Exit library, main door behind you',
+  'Continue straight along left path':          'Turn around, walk along right path',
+  'Go straight along left side to end of campus':'Turn around, walk back along right side',
+  'Walk straight, ground is on your right past mid-campus': 'Walk back, admin block ahead',
+  'Continue straight along right path':         'Turn around, walk along left path',
+  'Continue straight, hostel gate ahead center-right': 'Walk back toward sports ground',
+  'Cross to left side at mid-campus':           'Cross to right side at mid-campus',
+  'Walk right from canteen':                    'Walk left toward canteen',
+  'Continue to campus far end':                 'Walk back toward campus entrance',
+  'Walk to campus far left end':                'Walk back along right side to entrance',
+};
+const REVERSE_DIR_HI = {
+  'दाईं ओर मुड़ें और चलें':               'बाईं ओर मुड़ें और चलें',
+  'सीधे जाएं फिर बाईं ओर मुड़ें':        'सीधे जाएं फिर दाईं ओर मुड़ें',
+  'सीधे जाएं, मुख्य खंड दाईं ओर':        'पीछे मुड़ें, मुख्य भवन बाईं ओर',
+  'सीधे जाएं, एटीएम दाईं दीवार पर':     'पीछे मुड़ें, एटीएम आपके पीछे',
+  'इमारत में प्रवेश करें, पहली मंजिल के लिए सीढ़ियाँ लें': 'इमारत से बाहर निकलें, सीढ़ियाँ नीचे लें',
+  'इमारत में प्रवेश करें, भूतल बाईं ओर': 'इमारत से बाहर निकलें, दाईं ओर मुड़ें',
+  'इमारत में प्रवेश करें, दूसरी मंजिल के लिए सीढ़ियाँ लें': 'इमारत से बाहर निकलें, सीढ़ियाँ दो बार नीचे लें',
+  'इमारत के अंदर दाईं ओर मुड़ें':       'इमारत के अंदर बाईं ओर मुड़ें',
+  'इमारत की बाहरी दीवार की ओर चलें':    'वापस इमारत के प्रवेश द्वार की ओर चलें',
+  'प्रवेश करें, काउंटर सीधे आगे है':    'पुस्तकालय से बाहर निकलें',
+  'बाईं ओर के रास्ते से सीधे चलते रहें':'पलटें और दाईं ओर के रास्ते से चलें',
+  'बाईं ओर सीधे कैंपस के अंत तक चलें': 'पलटें और दाईं ओर वापस चलें',
+  'सीधे चलें, मैदान कैंपस के बीच में दाईं ओर है': 'वापस चलें, प्रशासनिक खंड आगे',
+  'दाईं ओर के रास्ते से सीधे चलते रहें':'पलटें और बाईं ओर के रास्ते से चलें',
+  'सीधे चलें, छात्रावास गेट आगे केंद्र-दाईं ओर': 'वापस खेल मैदान की ओर चलें',
+  'कैंपस के बीच में बाईं ओर पार करें':  'कैंपस के बीच में दाईं ओर पार करें',
+  'कैंटीन से दाईं ओर चलें':             'बाईं ओर कैंटीन की ओर चलें',
+  'कैंपस के दूर छोर की ओर चलें':        'वापस कैंपस प्रवेश की ओर चलें',
+  'कैंपस के दूर बाईं छोर की ओर चलें':  'दाईं ओर वापस प्रवेश की ओर चलें',
+};
+
+// ── BUILD ADJACENCY LIST ────────────────────────────────
+const graph = {};
+Object.keys(LOCATIONS).forEach(k => { graph[k] = []; });
+
+EDGES.forEach(([a, b, steps, dirAB, dirAB_hi]) => {
+  const dirBA    = REVERSE_DIR[dirAB]    || dirAB;
+  const dirBA_hi = REVERSE_DIR_HI[dirAB_hi] || dirAB_hi;
+  graph[a].push({ to: b, steps, dir: dirAB,  dir_hi: dirAB_hi });
+  graph[b].push({ to: a, steps, dir: dirBA,  dir_hi: dirBA_hi });
+});
+
+// ── DIJKSTRA ────────────────────────────────────────────
+function dijkstra(start, end) {
+  if (start === end) return { path: [start], totalSteps: 0, edges: [] };
+
+  const dist  = {};
+  const prev  = {};
+  const edge  = {};
+  const visited = new Set();
+
+  Object.keys(LOCATIONS).forEach(k => { dist[k] = Infinity; });
+  dist[start] = 0;
+
+  const queue = [start];
+
+  while (queue.length) {
+    // Simple min-pick (good enough for 14 nodes)
+    queue.sort((a, b) => dist[a] - dist[b]);
+    const u = queue.shift();
+    if (visited.has(u)) continue;
+    visited.add(u);
+
+    for (const neighbor of graph[u]) {
+      const alt = dist[u] + neighbor.steps;
+      if (alt < dist[neighbor.to]) {
+        dist[neighbor.to] = alt;
+        prev[neighbor.to] = u;
+        edge[neighbor.to] = neighbor;
+        if (!visited.has(neighbor.to)) queue.push(neighbor.to);
+      }
+    }
+  }
+
+  if (dist[end] === Infinity) return null; // no path
+
+  // Reconstruct path
+  const path = [];
+  const edges = [];
+  let cur = end;
+  while (cur !== start) {
+    path.unshift(cur);
+    edges.unshift(edge[cur]);
+    cur = prev[cur];
+  }
+  path.unshift(start);
+
+  return { path, totalSteps: dist[end], edges };
+}
+
+// ── STATE ───────────────────────────────────────────────
+let currentLang = 'en';
+let currentRoute = null;
+let speaking = false;
+
+// ── INIT ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  populateSelects();
+  // Default to home screen loc if came from QR
+  const params = new URLSearchParams(window.location.search);
+  const from = params.get('from');
+  const to   = params.get('to');
+  if (from && LOCATIONS[from]) document.getElementById('sel-from').value = from;
+  if (to   && LOCATIONS[to])   document.getElementById('sel-to').value   = to;
+  if (from && to) findRoute();
+});
+
+function populateSelects() {
+  const selFrom = document.getElementById('sel-from');
+  const selTo   = document.getElementById('sel-to');
+  Object.entries(LOCATIONS).forEach(([key, loc]) => {
+    const optA = new Option(`${loc.en} — ${loc.hi}`, key);
+    const optB = new Option(`${loc.en} — ${loc.hi}`, key);
+    selFrom.appendChild(optA);
+    selTo.appendChild(optB);
+  });
+  selTo.value = 'canteen'; // sensible default
+}
+
+// ── SWAP ────────────────────────────────────────────────
+function swapLocations() {
+  const selFrom = document.getElementById('sel-from');
+  const selTo   = document.getElementById('sel-to');
+  const tmp = selFrom.value;
+  selFrom.value = selTo.value;
+  selTo.value = tmp;
+}
+
+// ── LANG ────────────────────────────────────────────────
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-hi').classList.toggle('active', lang === 'hi');
+  if (currentRoute) renderResult(currentRoute);
+}
+
+// ── DEMO LOADER ─────────────────────────────────────────
+function loadDemo(from, to) {
+  document.getElementById('sel-from').value = from;
+  document.getElementById('sel-to').value   = to;
+  findRoute();
+  document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── FIND ROUTE ──────────────────────────────────────────
+function findRoute() {
+  stopSpeech();
+  const from = document.getElementById('sel-from').value;
+  const to   = document.getElementById('sel-to').value;
+
+  if (from === to) {
+    alert('You are already at this location!');
+    return;
+  }
+
+  const result = dijkstra(from, to);
+  currentRoute = result ? { ...result, from, to } : null;
+  renderResult(currentRoute);
+}
+
+// ── RENDER ──────────────────────────────────────────────
+function renderResult(route) {
+  const card = document.getElementById('result-card');
+  card.classList.add('visible');
+
+  if (!route) {
+    document.getElementById('steps-list').innerHTML =
+      '<div class="no-route">⚠ No direct route found between these locations.</div>';
+    document.getElementById('total-pill').textContent = '';
+    return;
+  }
+
+  const L = LOCATIONS;
+  const lang = currentLang;
+
+  // Title
+  document.getElementById('result-title').textContent =
+    `${L[route.from][lang]} → ${L[route.to][lang]}`;
+
+  // Total steps
+  document.getElementById('total-pill').innerHTML =
+    `🚶 <strong>${route.totalSteps}</strong> steps total &nbsp;·&nbsp; ~${Math.ceil(route.totalSteps / 80)} min walk`;
+
+  // Build step items
+  const list = document.getElementById('steps-list');
+  list.innerHTML = '';
+
+  route.path.forEach((locKey, i) => {
+    // Location node
+    const item = document.createElement('div');
+    item.className = 'step-item';
+    item.style.animationDelay = `${i * 60}ms`;
+
+    const badge = document.createElement('div');
+    badge.className = 'step-num-badge' +
+      (i === 0 ? ' start' : i === route.path.length - 1 ? ' end' : '');
+    badge.textContent = i === 0 ? '▶' : i === route.path.length - 1 ? '★' : String(i);
+
+    const body = document.createElement('div');
+    body.className = 'step-body';
+
+    const action = document.createElement('div');
+    action.className = 'step-action';
+    action.textContent = L[locKey][lang] || L[locKey]['en'];
+
+    const detail = document.createElement('div');
+    detail.className = 'step-detail';
+    detail.textContent = i === 0
+      ? (lang === 'hi' ? 'यहाँ से शुरू करें' : 'START HERE')
+      : i === route.path.length - 1
+        ? (lang === 'hi' ? 'आप पहुँच गए!' : 'YOU HAVE ARRIVED')
+        : '';
+
+    body.appendChild(action);
+    body.appendChild(detail);
+    item.appendChild(badge);
+    item.appendChild(body);
+    list.appendChild(item);
+
+    // Arrow + instruction to next node
+    if (i < route.edges.length) {
+      const edgeData = route.edges[i];
+      const conn = document.createElement('div');
+      conn.className = 'step-item';
+      conn.style.animationDelay = `${i * 60 + 30}ms`;
+      conn.style.opacity = '0.75';
+
+      const arrowBadge = document.createElement('div');
+      arrowBadge.className = 'step-num-badge';
+      arrowBadge.style.background = 'transparent';
+      arrowBadge.style.border = '1px dashed #333';
+      arrowBadge.style.color = '#555';
+      arrowBadge.textContent = '↓';
+
+      const connBody = document.createElement('div');
+      connBody.className = 'step-body';
+
+      const connAction = document.createElement('div');
+      connAction.className = 'step-action';
+      connAction.style.fontSize = '14px';
+      connAction.style.color = '#aaa';
+      connAction.textContent = lang === 'hi' ? edgeData.dir_hi : edgeData.dir;
+
+      const connDetail = document.createElement('div');
+      connDetail.className = 'step-detail';
+      connDetail.textContent = `${edgeData.steps} steps`;
+
+      connBody.appendChild(connAction);
+      connBody.appendChild(connDetail);
+      conn.appendChild(arrowBadge);
+      conn.appendChild(connBody);
+      list.appendChild(conn);
+    }
+  });
+
+  // Status
+  setStatus('ready');
+}
+
+// ── SPEECH ──────────────────────────────────────────────
+function buildSpeechScript(route) {
+  if (!route) return '';
+  const L = LOCATIONS;
+  const lang = currentLang;
+  const isHi = lang === 'hi';
+
+  const from = L[route.from][lang];
+  const to   = L[route.to][lang];
+
+  let script = isHi
+    ? `${from} से ${to} तक का रास्ता। कुल ${route.totalSteps} कदम। `
+    : `Route from ${from} to ${to}. Total ${route.totalSteps} steps. `;
+
+  route.edges.forEach((edge, i) => {
+    const nextLoc = L[route.path[i + 1]][lang];
+    const dir     = isHi ? edge.dir_hi : edge.dir;
+    script += isHi
+      ? `चरण ${i + 1}: ${dir}, ${edge.steps} कदम, ${nextLoc} पहुँचें। `
+      : `Step ${i + 1}: ${dir}, ${edge.steps} steps to ${nextLoc}. `;
+  });
+
+  script += isHi ? 'आप अपने गंतव्य पर पहुँच गए हैं।' : 'You have arrived at your destination.';
+  return script;
+}
+
+function speakRoute() {
+  const voices = speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    speechSynthesis.onvoiceschanged = () => {
+      speechSynthesis.onvoiceschanged = null;
+      speakRoute();
+    };
+    return;
+  }
+
+  stopSpeech();
+  if (!currentRoute) return;
+
+  const script = buildSpeechScript(currentRoute);
+  const utterance = new SpeechSynthesisUtterance(script);
+  utterance.lang   = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+  utterance.rate   = 0.95;
+  utterance.pitch  = 1.0;
+  utterance.volume = 1.0;
+
+  const preferred = voices.find(v => v.lang === utterance.lang)
+                 || voices.find(v => v.lang.startsWith(currentLang))
+                 || null;
+  if (preferred) utterance.voice = preferred;
+
+  utterance.onstart = () => {
+    speaking = true;
+    setStatus('speaking');
+    document.getElementById('btn-speak').classList.add('active');
+    document.getElementById('speak-label').textContent = 'SPEAKING...';
+  };
+  utterance.onend = utterance.onerror = () => {
+    speaking = false;
+    setStatus('ready');
+    document.getElementById('btn-speak').classList.remove('active');
+    document.getElementById('speak-label').textContent = 'SPEAK ROUTE';
+  };
+
+  speechSynthesis.speak(utterance);
+}
+
+function stopSpeech() {
+  if (speechSynthesis.speaking || speechSynthesis.pending) {
+    speechSynthesis.cancel();
+  }
+  speaking = false;
+  setStatus('ready');
+  const btn = document.getElementById('btn-speak');
+  if (btn) {
+    btn.classList.remove('active');
+    document.getElementById('speak-label').textContent = 'SPEAK ROUTE';
+  }
+}
+
+function setStatus(s) {
+  const dot  = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  if (!dot) return;
+  dot.className = 'status-dot' + (s === 'speaking' ? ' speaking' : '');
+  text.textContent = s === 'speaking' ? 'SPEAKING' : 'READY';
+}
+
+if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => {};
+}
+</script>
+</body>
+</html>
