@@ -24,7 +24,7 @@ import json
 from PIL import Image, ImageDraw, ImageFont
 
 # ── CONFIG ────────────────────────────────────────────────
-SERVER_URL  = "http://192.168.29.113:8080"   # <-- Change this to your server IP/domain
+SERVER_URL  = "https://adigiter.github.io" 
 OUTPUT_DIR  = "./qr_output"
 QR_SIZE_PX  = 300           # QR module size (pixels)
 LABEL_H_PX  = 56            # Yellow label strip height
