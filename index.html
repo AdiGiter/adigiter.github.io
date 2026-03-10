@@ -8,11 +8,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <title>Sahayak-Drishti | सहायक-दृष्टि</title>
-  <link rel="manifest" href="/manifest.json"/>
+  <link rel="manifest" href="manifest.json"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -63,19 +63,17 @@
     <span class="error-icon" aria-hidden="true">⚠️</span>
     <h2 class="error-title">Location Not Found</h2>
     <p class="error-sub" id="error-message">This QR code is not recognized. Please scan a valid Sahayak-Drishti sticker.</p>
-    <a href="/" class="btn btn-outline" style="margin-top:24px;text-decoration:none">← Go Home</a>
+    <a href="index.html" class="btn btn-outline" style="margin-top:24px;text-decoration:none">← Go Home</a>
   </section>
 
   <!-- ─── GUIDANCE ──────────────────────────────────── -->
   <section id="guidance-screen" style="display:none" role="region" aria-label="Audio Guidance">
 
-    <!-- Location badge -->
     <div class="location-badge" role="status">
       <div class="loc-dot" aria-hidden="true"></div>
       <span class="mono-label" id="loc-key-label">—</span>
     </div>
 
-    <!-- Main card -->
     <div class="audio-card">
       <div class="card-top-row">
         <span class="headphone-emoji" aria-hidden="true">🎧</span>
@@ -88,12 +86,10 @@
       <h1 class="loc-title-en" id="loc-title-en"></h1>
       <p class="loc-title-hi" id="loc-title-hi" lang="hi"></p>
 
-      <!-- Progress bar -->
       <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
 
-      <!-- Waveform -->
       <div class="waveform" id="waveform" aria-hidden="true">
         <div class="wb"></div><div class="wb"></div><div class="wb"></div>
         <div class="wb"></div><div class="wb"></div><div class="wb"></div>
@@ -101,12 +97,10 @@
         <div class="wb"></div><div class="wb"></div><div class="wb"></div>
       </div>
 
-      <!-- Script text -->
       <div class="script-box" id="script-box" role="article">
         <p id="script-text">Tap Play to hear audio directions for this location.</p>
       </div>
 
-      <!-- Controls -->
       <div class="btn-row" role="group" aria-label="Playback controls">
         <button class="btn btn-play" id="btn-play" onclick="handlePlay()" aria-label="Play audio">
           <span aria-hidden="true" id="play-icon">▶</span>
@@ -121,7 +115,6 @@
       </div>
     </div>
 
-    <!-- Language switch -->
     <div class="control-card">
       <span class="mono-label">// SELECT LANGUAGE / भाषा चुनें</span>
       <div class="lang-row" role="group" aria-label="Language">
@@ -134,7 +127,6 @@
       </div>
     </div>
 
-    <!-- Speed control -->
     <div class="control-card">
       <div class="speed-label-row">
         <span class="mono-label">// SPEECH SPEED</span>
@@ -148,7 +140,6 @@
       </div>
     </div>
 
-    <!-- Headphone notice -->
     <div class="notice-card">
       <span class="notice-icon" aria-hidden="true">🎧</span>
       <div class="notice-text">
@@ -164,8 +155,8 @@
     <p class="mono-label">SAHAYAK-DRISHTI &nbsp;·&nbsp; <span>TEAM INNOVIX</span> &nbsp;·&nbsp; BIT MESRA JAIPUR</p>
   </footer>
 
-</div><!-- #app -->
+</div>
 
-<script src="/js/app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
