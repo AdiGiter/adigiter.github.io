@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="theme-color" content="#0a0a0a"/>
+  <meta name="description" content="Sahayak-Drishti: Audio guidance for visually impaired users in public spaces"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <title>Sahayak-Drishti | सहायक-दृष्टि</title>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+
+<div id="app" role="main">
+
+  <!-- ─── HEADER ─────────────────────────────────── -->
+  <header class="app-header" role="banner">
+    <div class="logo-group">
+      <div class="logo-icon" aria-hidden="true">👁</div>
+      <div class="logo-text">
+        <span class="name-en">Sahayak-Drishti</span>
+        <span class="name-hi">सहायक-दृष्टि</span>
+      </div>
+    </div>
+    <span class="lang-badge" id="lang-badge" aria-live="polite">EN</span>
+  </header>
+
+  <!-- ─── LOADING ──────────────────────────────────── -->
+  <section id="loading-screen" aria-label="Loading" role="status">
+    <div class="loader-ring" aria-hidden="true"></div>
+    <p class="loader-text">Loading guidance...</p>
+  </section>
+
+  <!-- ─── HOME (no ?loc= param) ────────────────────── -->
+  <section id="home-screen" style="display:none" role="region" aria-label="Home">
+    <div class="home-hero">
+      <span class="big-icon" aria-hidden="true">🦯</span>
+      <h1>Audio Guide<br/><span>For Everyone</span></h1>
+      <p class="tagline">Scan any yellow QR sticker in the campus to hear audio directions instantly — no app needed.</p>
+    </div>
+    <div class="steps-card">
+      <span class="mono-label">// HOW IT WORKS</span>
+      <div class="step-list">
+        <div class="step-item"><div class="step-num">01</div><div class="step-text"><strong>Find a QR sticker</strong> — placed at entrances, counters, and key spots.</div></div>
+        <div class="step-item"><div class="step-num">02</div><div class="step-text"><strong>Scan with your phone camera</strong> — works with any scanner.</div></div>
+        <div class="step-item"><div class="step-num">03</div><div class="step-text"><strong>Audio plays automatically</strong> — in Hindi or English based on your phone language.</div></div>
+        <div class="step-item"><div class="step-num">04</div><div class="step-text"><strong>Zero install required</strong> — runs directly in the browser, always free.</div></div>
+      </div>
+    </div>
+    <div class="notice-card">
+      <span class="notice-icon" aria-hidden="true">🎧</span>
+      <div class="notice-text"><strong>Tip: Use Headphones</strong>Plug in earphones for best audio quality in noisy areas.</div>
+    </div>
+  </section>
+
+  <!-- ─── ERROR ────────────────────────────────────── -->
+  <section id="error-screen" style="display:none" role="alert" aria-live="assertive">
+    <span class="error-icon" aria-hidden="true">⚠️</span>
+    <h2 class="error-title">Location Not Found</h2>
+    <p class="error-sub" id="error-message">This QR code is not recognized. Please scan a valid Sahayak-Drishti sticker.</p>
+    <a href="/" class="btn btn-outline" style="margin-top:24px;text-decoration:none">← Go Home</a>
+  </section>
+
+  <!-- ─── GUIDANCE ──────────────────────────────────── -->
+  <section id="guidance-screen" style="display:none" role="region" aria-label="Audio Guidance">
+
+    <!-- Location badge -->
+    <div class="location-badge" role="status">
+      <div class="loc-dot" aria-hidden="true"></div>
+      <span class="mono-label" id="loc-key-label">—</span>
+    </div>
+
+    <!-- Main card -->
+    <div class="audio-card">
+      <div class="card-top-row">
+        <span class="headphone-emoji" aria-hidden="true">🎧</span>
+        <div class="status-chip" id="status-chip" role="status" aria-live="polite">
+          <div class="status-dot"></div>
+          <span id="status-text">Ready</span>
+        </div>
+      </div>
+
+      <h1 class="loc-title-en" id="loc-title-en"></h1>
+      <p class="loc-title-hi" id="loc-title-hi" lang="hi"></p>
+
+      <!-- Progress bar -->
+      <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <!-- Waveform -->
+      <div class="waveform" id="waveform" aria-hidden="true">
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+        <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      </div>
+
+      <!-- Script text -->
+      <div class="script-box" id="script-box" role="article">
+        <p id="script-text">Tap Play to hear audio directions for this location.</p>
+      </div>
+
+      <!-- Controls -->
+      <div class="btn-row" role="group" aria-label="Playback controls">
+        <button class="btn btn-play" id="btn-play" onclick="handlePlay()" aria-label="Play audio">
+          <span aria-hidden="true" id="play-icon">▶</span>
+          <span id="play-label">PLAY</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-pause" onclick="handlePause()" aria-label="Pause">
+          <span aria-hidden="true">⏸</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-stop" onclick="handleStop()" aria-label="Stop">
+          <span aria-hidden="true">⏹</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Language switch -->
+    <div class="control-card">
+      <span class="mono-label">// SELECT LANGUAGE / भाषा चुनें</span>
+      <div class="lang-row" role="group" aria-label="Language">
+        <button class="lang-btn active" id="btn-lang-en" onclick="switchLang('en')" aria-pressed="true">
+          English<span class="lang-sub">अंग्रेज़ी</span>
+        </button>
+        <button class="lang-btn" id="btn-lang-hi" onclick="switchLang('hi')" aria-pressed="false">
+          हिन्दी<span class="lang-sub">Hindi</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Speed control -->
+    <div class="control-card">
+      <div class="speed-label-row">
+        <span class="mono-label">// SPEECH SPEED</span>
+        <span class="mono-label speed-val" id="speed-display">1.0×</span>
+      </div>
+      <div class="speed-row" role="group" aria-label="Speed">
+        <button class="speed-btn" onclick="setSpeed(0.7)" data-speed="0.7">0.7×<span class="lang-sub">Slow</span></button>
+        <button class="speed-btn active" onclick="setSpeed(1.0)" data-speed="1.0">1.0×<span class="lang-sub">Normal</span></button>
+        <button class="speed-btn" onclick="setSpeed(1.3)" data-speed="1.3">1.3×<span class="lang-sub">Fast</span></button>
+        <button class="speed-btn" onclick="setSpeed(1.6)" data-speed="1.6">1.6×<span class="lang-sub">Faster</span></button>
+      </div>
+    </div>
+
+    <!-- Headphone notice -->
+    <div class="notice-card">
+      <span class="notice-icon" aria-hidden="true">🎧</span>
+      <div class="notice-text">
+        <strong>Use Headphones</strong>
+        For clear audio in busy public areas, connect earphones before playing.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─── FOOTER ───────────────────────────────────── -->
+  <footer class="app-footer" role="contentinfo">
+    <p class="mono-label">SAHAYAK-DRISHTI &nbsp;·&nbsp; <span>TEAM INNOVIX</span> &nbsp;·&nbsp; BIT MESRA JAIPUR</p>
+  </footer>
+
+</div><!-- #app -->
+
+<script src="/js/app.js"></script>
+</body>
+</html>

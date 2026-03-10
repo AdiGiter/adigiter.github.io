@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — Sahayak-Drishti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin.css"/>
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="s-icon">👁</div>
+    <div>
+      <div class="s-title">Sahayak-Drishti</div>
+      <div class="s-sub">Admin Panel</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" onclick="showTab('dashboard')">
+      <span>⬡</span> Dashboard
+    </a>
+    <a href="#" class="nav-item" onclick="showTab('locations')">
+      <span>📍</span> Locations
+    </a>
+    <a href="#" class="nav-item" onclick="showTab('add')">
+      <span>＋</span> Add Location
+    </a>
+    <a href="/index.html" class="nav-item" target="_blank">
+      <span>🔗</span> View Live Site
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="mono-label">INNOVIX · BIT MESRA</span>
+  </div>
+</aside>
+
+<!-- ── MAIN ────────────────────────────────────────── -->
+<main class="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="page-title">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-badge">🔒 ADMIN</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- ── TAB: DASHBOARD ─────────────────────────────── -->
+  <section id="tab-dashboard" class="tab-section active">
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card loading-pulse">
+        <div class="stat-icon">📍</div>
+        <div class="stat-val" id="stat-total">—</div>
+        <div class="stat-label">Total Locations</div>
+      </div>
+      <div class="stat-card loading-pulse">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val" id="stat-active">—</div>
+        <div class="stat-label">Active</div>
+      </div>
+      <div class="stat-card loading-pulse">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-val" id="stat-inactive">—</div>
+        <div class="stat-label">Inactive</div>
+      </div>
+      <div class="stat-card loading-pulse">
+        <div class="stat-icon">🏢</div>
+        <div class="stat-val" id="stat-buildings">—</div>
+        <div class="stat-label">Buildings</div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Recent Locations</h2>
+        <button class="btn-sm btn-yellow" onclick="showTab('locations')">View All →</button>
+      </div>
+      <div id="recent-list" class="location-table-wrap">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TAB: LOCATIONS LIST ────────────────────────── -->
+  <section id="tab-locations" class="tab-section">
+    <div class="toolbar">
+      <input type="text" class="search-input" id="search-input" placeholder="🔍  Search by name, building, key..." oninput="debounceSearch(this.value)"/>
+      <button class="btn-sm btn-yellow" onclick="showTab('add')">＋ Add New</button>
+      <button class="btn-sm btn-outline" onclick="loadAllLocations()">↻ Refresh</button>
+    </div>
+
+    <div id="location-list" class="location-table-wrap">
+      <div class="spinner"></div>
+    </div>
+  </section>
+
+  <!-- ── TAB: ADD / EDIT LOCATION ───────────────────── -->
+  <section id="tab-add" class="tab-section">
+    <div class="form-card">
+      <h2 id="form-title">Add New Location</h2>
+      <p id="form-subtitle" class="form-sub">Fill in bilingual details for the new QR code location.</p>
+
+      <!-- Hidden ID for edit mode -->
+      <input type="hidden" id="edit-id"/>
+
+      <div class="form-grid">
+
+        <!-- Location Key -->
+        <div class="form-group full-width">
+          <label for="f-key">Location Key <span class="req">*</span></label>
+          <input type="text" id="f-key" placeholder="e.g. library_entry" class="form-input"/>
+          <small class="form-hint">Lowercase letters, digits, underscores only. This becomes the QR URL parameter.</small>
+          <span class="field-error" id="err-key"></span>
+        </div>
+
+        <!-- English Name -->
+        <div class="form-group">
+          <label for="f-name-en">Name (English) <span class="req">*</span></label>
+          <input type="text" id="f-name-en" placeholder="Main Library — Entry" class="form-input"/>
+          <span class="field-error" id="err-name-en"></span>
+        </div>
+
+        <!-- Hindi Name -->
+        <div class="form-group">
+          <label for="f-name-hi">Name (Hindi) <span class="req">*</span></label>
+          <input type="text" id="f-name-hi" placeholder="मुख्य पुस्तकालय — प्रवेश" class="form-input" lang="hi"/>
+          <span class="field-error" id="err-name-hi"></span>
+        </div>
+
+        <!-- English Script -->
+        <div class="form-group full-width">
+          <label for="f-script-en">Audio Script (English) <span class="req">*</span></label>
+          <textarea id="f-script-en" rows="5" placeholder="You are at the Main Library entrance..." class="form-input form-textarea"></textarea>
+          <div class="char-count"><span id="cnt-en">0</span> / 2000 characters</div>
+          <span class="field-error" id="err-script-en"></span>
+        </div>
+
+        <!-- Hindi Script -->
+        <div class="form-group full-width">
+          <label for="f-script-hi">Audio Script (Hindi) <span class="req">*</span></label>
+          <textarea id="f-script-hi" rows="5" placeholder="आप मुख्य पुस्तकालय के प्रवेश द्वार पर हैं..." class="form-input form-textarea" lang="hi"></textarea>
+          <div class="char-count"><span id="cnt-hi">0</span> / 2000 characters</div>
+          <span class="field-error" id="err-script-hi"></span>
+        </div>
+
+        <!-- Floor -->
+        <div class="form-group">
+          <label for="f-floor">Floor</label>
+          <select id="f-floor" class="form-input form-select">
+            <option value="">Select floor...</option>
+            <option value="Ground">Ground Floor</option>
+            <option value="Basement">Basement</option>
+            <option value="First">First Floor</option>
+            <option value="Second">Second Floor</option>
+            <option value="Third">Third Floor</option>
+            <option value="Terrace">Terrace</option>
+          </select>
+        </div>
+
+        <!-- Building -->
+        <div class="form-group">
+          <label for="f-building">Building / Block</label>
+          <input type="text" id="f-building" placeholder="e.g. Library Block" class="form-input"/>
+        </div>
+
+        <!-- Active toggle -->
+        <div class="form-group full-width">
+          <label class="toggle-label">
+            <input type="checkbox" id="f-active" checked class="toggle-input"/>
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">Active (QR code is live)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Form action row -->
+      <div class="form-actions">
+        <button class="btn btn-yellow" id="btn-submit" onclick="submitForm()">
+          <span id="submit-label">＋ Create Location</span>
+        </button>
+        <button class="btn btn-outline" onclick="resetForm()">✕ Clear</button>
+        <button class="btn btn-outline" id="btn-preview" onclick="previewAudio()" style="display:none">
+          ▶ Preview Audio
+        </button>
+      </div>
+
+      <!-- Toast notification -->
+      <div id="form-toast" class="form-toast hidden"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── MODALS ──────────────────────────────────────── -->
+
+<!-- QR Preview Modal -->
+<div class="modal-overlay hidden" id="qr-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="qr-modal-title">QR Code</h3>
+      <button class="modal-close" onclick="closeModal('qr-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <img id="qr-img" src="" alt="QR Code" class="qr-preview-img"/>
+      <p class="qr-url" id="qr-url"></p>
+    </div>
+    <div class="modal-footer">
+      <a id="qr-download-link" href="#" download class="btn btn-yellow">⬇ Download PNG</a>
+      <button class="btn btn-outline" onclick="closeModal('qr-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>⚠️ Confirm Delete</h3>
+      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-msg">Are you sure you want to permanently delete this location?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-red" id="confirm-yes-btn">Delete</button>
+      <button class="btn btn-outline" onclick="closeModal('confirm-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "main_entrance": {
+    "en": "Welcome. You are at the Main Entrance of the campus. The Security Check Post is directly in front of you. The Administrative Block is 50 steps ahead on your right. The Academic Block is 100 steps ahead on your left. Please proceed carefully.",
+    "hi": "स्वागत है। आप परिसर के मुख्य प्रवेश द्वार पर हैं। सुरक्षा जांच चौकी आपके सामने है। प्रशासनिक खंड आपके दाईं ओर 50 कदम आगे है। शैक्षणिक खंड आपके बाईं ओर 100 कदम आगे है। कृपया सावधानी से आगे बढ़ें।"
+  },
+  "library_entry": {
+    "en": "You are at the Main Library entrance. The book issue and return counter is 10 steps straight ahead. The reading hall is to your right. The digital resource center is to your left. Library hours are 9 AM to 9 PM on weekdays, and 10 AM to 5 PM on weekends.",
+    "hi": "आप मुख्य पुस्तकालय के प्रवेश द्वार पर हैं। पुस्तक जारी करने और वापसी काउंटर 10 कदम सीधे आगे है। पठन कक्ष आपकी दाईं ओर है। डिजिटल संसाधन केंद्र आपकी बाईं ओर है। पुस्तकालय का समय सोमवार से शुक्रवार सुबह 9 से रात 9 बजे तक और सप्ताहांत पर सुबह 10 से शाम 5 बजे तक है।"
+  },
+  "library_counter": {
+    "en": "You are at the Library Issue and Return Counter. To issue a book, please present your library card and the book to the librarian. To return a book, place it on the return tray on your left. For renewals, speak to the staff at this counter.",
+    "hi": "आप पुस्तकालय जारी करने और वापसी काउंटर पर हैं। पुस्तक जारी करने के लिए, कृपया अपना पुस्तकालय कार्ड और पुस्तक पुस्तकाध्यक्ष को प्रस्तुत करें। पुस्तक वापस करने के लिए, इसे अपनी बाईं ओर वापसी ट्रे पर रखें। नवीनीकरण के लिए इस काउंटर पर कर्मचारियों से बात करें।"
+  },
+  "admin_block": {
+    "en": "You are at the Administrative Block. The Principal's Office is on the first floor, Room number 101. The Accounts Section is on the ground floor to your right. The Scholarship Section is on the ground floor to your left. The Examination Cell is on the second floor. Please take the stairs or elevator ahead.",
+    "hi": "आप प्रशासनिक खंड में हैं। प्रधानाचार्य कार्यालय पहली मंजिल पर कक्ष संख्या 101 में है। लेखा अनुभाग भूतल पर आपकी दाईं ओर है। छात्रवृत्ति अनुभाग भूतल पर आपकी बाईं ओर है। परीक्षा प्रकोष्ठ दूसरी मंजिल पर है। कृपया आगे सीढ़ियाँ या लिफ्ट लें।"
+  },
+  "scholarship_section": {
+    "en": "You are at the Scholarship Section. Please form a queue here. For scholarship forms, collect them from Counter Number 1, which is straight ahead. Submit filled forms at Counter Number 2, which is to your right. Office hours are 10 AM to 4 PM, Monday to Friday.",
+    "hi": "आप छात्रवृत्ति अनुभाग में हैं। कृपया यहाँ कतार लगाएं। छात्रवृत्ति फॉर्म के लिए, काउंटर नंबर 1 से लें, जो सीधे आगे है। भरे हुए फॉर्म काउंटर नंबर 2 पर जमा करें, जो आपकी दाईं ओर है। कार्यालय समय सोमवार से शुक्रवार सुबह 10 से शाम 4 बजे तक है।"
+  },
+  "admin_washroom_ground": {
+    "en": "You are near the Ground Floor Washroom of the Administrative Block. The washroom is 5 steps ahead. Push the door to enter. The ladies washroom is on your right and the gents washroom is on your left. The washroom is accessible for persons with disabilities.",
+    "hi": "आप प्रशासनिक खंड के भूतल के शौचालय के पास हैं। शौचालय 5 कदम आगे है। प्रवेश करने के लिए दरवाजा धकेलें। महिला शौचालय आपकी दाईं ओर है और पुरुष शौचालय आपकी बाईं ओर है। शौचालय दिव्यांगजनों के लिए सुलभ है।"
+  },
+  "canteen": {
+    "en": "You are at the Campus Canteen. The order counter is straight ahead, 15 steps. Seating area is to your right. Today's menu is displayed on the board above the counter. Vegetarian food is served on the right side of the counter. Non-vegetarian food is on the left. Timings are 8 AM to 8 PM.",
+    "hi": "आप कैंपस कैंटीन में हैं। ऑर्डर काउंटर 15 कदम सीधे आगे है। बैठने का क्षेत्र आपकी दाईं ओर है। आज का मेनू काउंटर के ऊपर बोर्ड पर प्रदर्शित है। काउंटर के दाईं ओर शाकाहारी भोजन परोसा जाता है। बाईं ओर मांसाहारी भोजन है। समय सुबह 8 से रात 8 बजे तक है।"
+  },
+  "exam_cell": {
+    "en": "You are at the Examination Cell, Second Floor. For admit cards, go to Counter 1 on your left. For result queries, go to Counter 2 on your right. For re-evaluation requests, go to Counter 3 at the far end. Please carry your student ID card. Office hours are 10 AM to 3 PM on working days.",
+    "hi": "आप परीक्षा प्रकोष्ठ में हैं, दूसरी मंजिल। प्रवेश पत्र के लिए, अपनी बाईं ओर काउंटर 1 पर जाएं। परिणाम पूछताछ के लिए, अपनी दाईं ओर काउंटर 2 पर जाएं। पुनर्मूल्यांकन अनुरोधों के लिए, सबसे दूर काउंटर 3 पर जाएं। कृपया अपना छात्र पहचान पत्र साथ लाएं।"
+  },
+  "medical_room": {
+    "en": "You are at the Campus Medical Room. A nurse is available from 9 AM to 5 PM on weekdays. For emergencies, press the red buzzer on the door. The doctor visits on Tuesdays and Thursdays from 11 AM to 1 PM. For serious emergencies, call 112 for ambulance services.",
+    "hi": "आप कैंपस चिकित्सा कक्ष में हैं। सोमवार से शुक्रवार सुबह 9 से शाम 5 बजे तक एक नर्स उपलब्ध है। आपातकाल के लिए, दरवाजे पर लाल बजर दबाएं। डॉक्टर मंगलवार और गुरुवार को सुबह 11 से दोपहर 1 बजे तक आते हैं। गंभीर आपात स्थिति के लिए एम्बुलेंस सेवाओं के लिए 112 पर कॉल करें।"
+  },
+  "parking_area": {
+    "en": "You are at the Campus Parking Area. Two-wheeler parking is to your right. Four-wheeler parking is straight ahead. Visitor parking is marked in yellow, to your left. Please lock your vehicle and carry your keys. The parking area is monitored by CCTV cameras.",
+    "hi": "आप कैंपस पार्किंग क्षेत्र में हैं। दोपहिया वाहन पार्किंग आपकी दाईं ओर है। चार पहिया वाहन पार्किंग सीधे आगे है। आगंतुक पार्किंग पीले रंग में चिह्नित है, आपकी बाईं ओर। कृपया अपने वाहन को लॉक करें और चाबी साथ रखें।"
+  },
+  "hostel_entry": {
+    "en": "You are at the Hostel Entry Gate. Boys Hostel is to your right, 30 steps. Girls Hostel is to your left, 30 steps. The warden's office is straight ahead. Visitors must register at the security desk before proceeding. Entry is permitted from 6 AM to 10 PM.",
+    "hi": "आप छात्रावास प्रवेश द्वार पर हैं। बॉयज़ हॉस्टल आपकी दाईं ओर 30 कदम पर है। गर्ल्स हॉस्टल आपकी बाईं ओर 30 कदम पर है। वार्डन का कार्यालय सीधे आगे है। आगंतुकों को आगे बढ़ने से पहले सुरक्षा डेस्क पर पंजीकरण करना होगा।"
+  },
+  "sports_complex": {
+    "en": "You are at the Sports Complex entrance. The indoor games hall is to your right. The gymnasium is to your left. The outdoor grounds are straight ahead, 50 steps. Sports equipment can be borrowed from the sports room, Counter 1, to your right. Timings are 6 AM to 9 PM daily.",
+    "hi": "आप खेल परिसर के प्रवेश द्वार पर हैं। इनडोर खेल हॉल आपकी दाईं ओर है। व्यायामशाला आपकी बाईं ओर है। बाहरी मैदान सीधे आगे 50 कदम पर है। खेल उपकरण आपकी दाईं ओर खेल कक्ष, काउंटर 1 से उधार लिया जा सकता है।"
+  }
+}
