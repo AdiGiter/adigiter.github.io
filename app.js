@@ -133,6 +133,16 @@ function updateScriptText() {
 window.handlePlay = function() {
   if (!state.locationData) return;
 
+  // Chrome loads voices async — if not ready yet, wait and retry once
+  const voices = speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    speechSynthesis.onvoiceschanged = () => {
+      speechSynthesis.onvoiceschanged = null;
+      handlePlay();
+    };
+    return;
+  }
+
   if (state.isPaused && speechSynthesis.paused) {
     speechSynthesis.resume();
     state.isPaused = false;
@@ -155,7 +165,6 @@ window.handlePlay = function() {
   utterance.pitch = 1.0;
   utterance.volume = 1.0;
 
-  const voices = speechSynthesis.getVoices();
   const preferred = voices.find(v => v.lang === utterance.lang)
                  || voices.find(v => v.lang.startsWith(state.currentLang))
                  || null;
@@ -207,13 +216,6 @@ window.handlePlay = function() {
   speechSynthesis.speak(utterance);
   $('play-icon').textContent  = '⟳';
   $('play-label').textContent = 'PLAYING';
-};
-
-window.handlePause = function() {
-  if (state.isPlaying && speechSynthesis.speaking && !speechSynthesis.paused) {
-    state.elapsedBeforePause += Date.now() - state.startedAt;
-    speechSynthesis.pause();
-  }
 };
 
 window.handleStop = function() {
