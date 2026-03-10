@@ -99,7 +99,7 @@ async function loadLocation(locKey) {
     renderGuidance(data);
     showScreen('guidance');
 
-    setTimeout(() => handlePlay(), 600);
+    //setTimeout(() => handlePlay(), 600);
 
   } catch (error) {
     console.error('Failed to load location:', error);
